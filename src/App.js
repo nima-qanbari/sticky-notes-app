@@ -1,8 +1,8 @@
-import React, { useState, useReducer } from "react";
+import React, { useState, useReducer, useEffect } from "react";
 import "./App.scss";
 
 //uuid
-import { v4 as uuid } from 'uuid';
+import { v4 as uuid } from "uuid";
 
 const initialState = {
   lastNoteCreated: null,
@@ -15,11 +15,19 @@ const reducer = (state, action) => {
     case "ADD_NOTE": {
       const newState = {
         lastNoteCreated: new Date().toTimeString().slice(0, 8),
-        totalNotes: state.notes.length + 1 ,
+        totalNotes: state.notes.length + 1,
         notes: [...state.notes, action.payload],
       };
-      console.log(newState)
+      console.log(newState);
       return newState;
+    }
+    case "DELETE_NOTE" : {
+      const newState = {
+        ...state,
+        totalNotes: state.notes.length - 1,
+        notes: state.notes.filter((note) => note.id !== action.payload.id)
+      }
+      return newState
     }
 
     default:
@@ -29,37 +37,45 @@ const reducer = (state, action) => {
 
 const App = () => {
   const [noteInput, setNoteInput] = useState("");
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(reducer, initialState,
+    (initial) => JSON.parse(localStorage.getItem("notes")) || initial);
 
+    useEffect(() => {
+      localStorage.setItem("notes", JSON.stringify(state));
+    }, [state])
   const addNote = (event) => {
-    event.preventDefault()
+    event.preventDefault();
 
-    if( !noteInput ) {
-      return
+    if (!noteInput) {
+      return;
     }
 
     const newNote = {
       id: uuid(),
       text: noteInput,
       rotate: Math.floor(Math.random() * 20),
-    }
-    
-    dispatch({ type:"ADD_NOTE", payload: newNote })
-    setNoteInput("")
+    };
+
+    dispatch({ type: "ADD_NOTE", payload: newNote });
+    setNoteInput("");
   };
 
   const dropNote = (event) => {
-    event.target.style.left = `${event.pageX - 50}px`
-    event.target.style.top = `${event.pageY - 50}px`
-  }
+    event.target.style.left = `${event.pageX - 50}px`;
+    event.target.style.top = `${event.pageY - 50}px`;
+  };
 
   const dragOver = (event) => {
-    event.stopPropagation()
-    event.preventDefault()
-  }
+    event.stopPropagation();
+    event.preventDefault();
+  };
   return (
     <div className="app" onDragOver={dragOver}>
-      <h1>Sticky Notes</h1>
+      <h1>
+        Sticky Notes ({state.totalNotes})
+        <span>{state.totalNotes > 0 ? `Last note created: ${state.lastNoteCreated} ` : ""}</span>
+      </h1>
+      
       <form onSubmit={addNote} className="note-form">
         <textarea
           placeholder="Create a new note..."
@@ -69,17 +85,30 @@ const App = () => {
         <button>Add</button>
       </form>
 
-      {state.notes.map(note => (
-        <div 
-        className="note"
-        style={{transform:`rotate(${note.rotate}deg)`}}
-         key={note.id}
-         draggable="true"
-         onDragEnd={dropNote}
-         >
+      {state.notes.map((note) => (
+        <div
+          className="note"
+          style={{ transform: `rotate(${note.rotate}deg)` }}
+          key={note.id}
+          draggable="true"
+          onDragEnd={dropNote}
+        >
+          <div onClick={() => dispatch({ type:"DELETE_NOTE", payload: note })} className="close">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </div>
           <pre className="text">{note.text}</pre>
         </div>
-
       ))}
     </div>
   );
