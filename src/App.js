@@ -48,8 +48,17 @@ const App = () => {
     setNoteInput("")
   };
 
+  const dropNote = (event) => {
+    event.target.style.left = `${event.pageX - 50}px`
+    event.target.style.top = `${event.pageY - 50}px`
+  }
+
+  const dragOver = (event) => {
+    event.stopPropagation()
+    event.preventDefault()
+  }
   return (
-    <div className="app">
+    <div className="app" onDragOver={dragOver}>
       <h1>Sticky Notes</h1>
       <form onSubmit={addNote} className="note-form">
         <textarea
@@ -61,7 +70,13 @@ const App = () => {
       </form>
 
       {state.notes.map(note => (
-        <div className="note" key={note.id}>
+        <div 
+        className="note"
+        style={{transform:`rotate(${note.rotate}deg)`}}
+         key={note.id}
+         draggable="true"
+         onDragEnd={dropNote}
+         >
           <pre className="text">{note.text}</pre>
         </div>
 
