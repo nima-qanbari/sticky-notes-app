@@ -1,57 +1,77 @@
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
-    margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .app {
-    padding: 50PX;
-    height: 100vh;
-    background-image: linear-gradient(rgba(#000, 0.6), rgba(#000, 0.6)), url('assets/brick-wall.jpg');
-    background-size: cover;
-   
+  padding: 50px;
+  height: 100vh;
+  background-image: linear-gradient(rgba(#000, 0.6), rgba(#000, 0.6)),
+    url("assets/brick-wall.jpg");
+  background-size: cover;
 }
 
 h1 {
-    color: white;
-    span {
-        display: block;
-        color: darken(white, 20%);
-        font-size: 14px;
-        font-style: italic;
-        height: 14px;
-    }
+  color: white;
+  span {
+    display: block;
+    color: darken(white, 20%);
+    font-size: 14px;
+    font-style: italic;
+    height: 14px;
+  }
 }
 
 .note-form {
-    display: flex;
-    flex-direction: column;
-    width: 200px;
+  display: flex;
+  flex-direction: column;
+  width: 200px;
 
-    textarea {
-        font-family: Arial, Helvetica, sans-serif;
-        border: 1px solid lightgray;
-        min-width: 100%;
-        max-width: 100%;
-        height: 100px;
-        padding: 10px;
-        outline: none;
+  textarea {
+    font-family: Arial, Helvetica, sans-serif;
+    border: 1px solid lightgray;
+    min-width: 100%;
+    max-width: 100%;
+    height: 100px;
+    padding: 10px;
+    outline: none;
+  }
+
+  button {
+    width: 100%;
+    padding: 10px;
+    background: #fff27f;
+    cursor: pointer;
+    border: 0;
+    outline: none;
+
+    &:hover {
+      background-color: tomato;
+      color: #fff;
     }
+  }
+}
 
-    button {
+.note {
+    position: absolute;
+    top: 100px;
+    left: 300px;
+    background-image: url("./assets/post-it-note.png");
+    background-size: cover;
+    width: 200px;
+    padding: 20px;
+    height: 200px;
+    cursor: pointer;
+
+    .text{
+        font-family: Arial, Helvetica, sans-serif;
+        height: 100%;
         width: 100%;
-        padding: 10px;
-        background: #fff27f;
-        cursor: pointer;
-        border: 0;
-        outline: none;
-
-        &:hover {
-            background-color: tomato;
-            color: #fff;
-        }
+        white-space: pre-wrap;
+        overflow-y: scroll;
     }
 }
